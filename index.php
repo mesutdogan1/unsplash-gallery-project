@@ -3,7 +3,7 @@
 // 2) Go To https://unsplash.com/developers
 // 3) Create Project At https://unsplash.com/oauth/applications
 // 4) Type Your Unsplash Project Client ID
-$client_id="YourClientID";
+$client_id = "YourClientID";
 
 $ch = curl_init();
 curl_setopt($ch, CURLOPT_URL, "https://api.unsplash.com/photos/?client_id={$client_id}");
@@ -23,12 +23,15 @@ curl_close($ch);
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Unsplash Gallery Project</title>
+    <link rel="icon" type="image/png" href="assets/images/u-favicon.png">
     <!-- Font Awesome -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" rel="stylesheet" />
     <!-- MDB -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.2.0/mdb.min.css" rel="stylesheet" />
+    <!-- dataTables -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.3/css/jquery.dataTables.css" />
 </head>
 
 <body>
@@ -37,36 +40,57 @@ curl_close($ch);
             <div class="col-md-12 mb-4">
                 <h1>Welcome to, Unsplash Photo Album!</h1>
             </div>
-            <?php
-            foreach ($output as $row) {
-                $created_date=strtotime($row->created_at);
-                $created_date=date("m.d.Y H:i:s");?>
-                <div class="col-md-4 mb-5">
-                    <div class="card h-100">
-                        <a href="<?php echo $row->urls->full ?>" target="_blank" rel="nofollow">
-                            <img src="<?php echo $row->urls->small ?>" class="card-img-top" alt="<?php echo $row->alt_description ?>" style="height: 300px;">
-                        </a>
-                        <div class="card-body">
-                            <h5 class="card-title">ID: <?php echo $row->id ?></h5>
-                            <p class="card-text">
-                                <b>Created Date:</b> <?php echo $created_date ?> <br>
-                                <b>Width:</b> <?php echo $row->width ?> <br>
-                                <b>Height:</b> <?php echo $row->height ?> <br>
-                                <b>Color:</b> <?php echo $row->color ?> <br>
-                                <?php echo ucwords($row->alt_description) ?>.
-                            </p>
-                        </div>
-                        <div class="card-footer">
-                            <a href="<?php echo $row->urls->full ?>" class="btn btn-block" style="background-color: <?php echo $row->color ?>; color: gray" target="_blank" rel="nofollow">Get Full Image</a>
-                        </div>
-                    </div>
-                </div>
-            <?php } ?>
+            <table id="table" class="table">
+                <thead>
+                    <th>Image</th>
+                    <th>Description</th>
+                    <th>Created Date</th>
+                    <th>Width</th>
+                    <th>Height</th>
+                    <th>Color</th>
+                    <th></th>
+                </thead>
+                <tbody>
+                    <?php
+                    foreach ($output as $row) {
+                        $created_date = strtotime($row->created_at);
+                        $created_date = date("m.d.Y H:i:s"); ?>
+                        <tr>
+                            <td>
+                                <a href="<?php echo $row->urls->full ?>" target="_blank" rel="nofollow">
+                                    <img src="<?php echo $row->urls->small ?>" class="card-img-top" alt="<?php echo $row->alt_description ?>" style="width: 100%; height: 50px;">
+                                </a>
+                            </td>
+                            <td><?php echo ucwords($row->alt_description) ?>.</td>
+                            <td><?php echo $created_date ?></td>
+                            <td><?php echo $row->width ?></td>
+                            <td><?php echo $row->height ?></td>
+                            <td><?php echo $row->color ?></td>
+                            <td>
+                                <a href="<?php echo $row->urls->full ?>" class="btn btn-block" style="background-color: <?php echo $row->color ?>; color: gray" target="_blank" rel="nofollow">Get Full Image</a>
+                            </td>
+                        </tr>
+                    <?php } ?>
+                </tbody>
+            </table>
         </div>
     </div>
 
     <!-- MDB -->
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.2.0/mdb.min.js"></script>
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.3.min.js" integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" crossorigin="anonymous"></script>
+    <!-- dataTables -->
+    <script type="text/javascript" src="https://cdn.datatables.net/1.13.3/js/jquery.dataTables.js"></script>
+    <script>
+        $('#table').DataTable({
+		pageLength: 5,
+		lengthMenu: [
+			[5,10, 20, 30, 40, 50, 100, -1],
+			["5","10", "20", "30", "40", "50", "100", "TÃ¼mÃ¼"]
+		]
+	});
+    </script>
 </body>
 
 </html>
